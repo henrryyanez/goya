@@ -25,3 +25,18 @@ func main() {
       log.Fatal(err)
    }
    defer handle.Close()
+
+      // Aplico el filtro que quiera
+   var filter string = "tcp and port 80" // or os.Args[1]
+   err = handle.SetBPFFilter(filter)
+   if err != nil {
+      log.Fatal(err)
+   }
+   fmt.Println("Only capturing TCP port 80 packets.")
+
+   packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
+   for packet := range packetSource.Packets() {
+      // Aqui coloco algo que quiera hacer con el pack
+      fmt.Println(packet)
+   }
+}
